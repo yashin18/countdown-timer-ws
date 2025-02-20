@@ -42,6 +42,14 @@ wss.on("connection", (ws) => {
             timer.time = 0;
             broadcast(data.timer);
         }
+
+        else if (data.action === "reset") {
+            clearInterval(timer.interval);
+            timer.running = false;
+            timer.paused = false;
+            timer.time = data.time;
+            broadcast(data.timer);
+        }
     });
 
     ws.on("close", () => console.log("Client disconnected"));
