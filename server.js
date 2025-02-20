@@ -17,28 +17,36 @@ wss.on("connection", (ws) => {
         const timer = timers[data.timer];
 
         if (data.action === "start") {
-            clearInterval(timer.interval);
-            timer.time = data.time;
-            timer.running = true;
-            timer.paused = false;
-            startTimer(data.timer);
+            if (!timer.running || timer.paused) {
+                clearInterval(timer.interval);
+                if (!timer.paused) {
+                    timer.time = data.time;
+                }
+                timer.running = true;
+                timer.paused = false;
+                startTimer(data.timer);
+            }
         }
 
-        else if (data.action === "pause" && timer.running) {
+        else if (data.action === "pause") {
             clearInterval(timer.interval);
             timer.paused = true;
             timer.running = false;
+            broadcast(data.timer);
         }
 
-        else if (data.action === "resume" && timer.paused) {
-            timer.running = true;
-            timer.paused = false;
-            startTimer(data.timer);
+        else if (data.action === "resume") {
+            if (timer.paused) {
+                timer.running = true;
+                timer.paused = false;
+                startTimer(data.timer);
+            }
         }
 
         else if (data.action === "stop") {
             clearInterval(timer.interval);
             timer.running = false;
+            timer.paused = false;
             timer.time = 0;
             broadcast(data.timer);
         }
@@ -63,6 +71,7 @@ function startTimer(timerID) {
         } else {
             clearInterval(timers[timerID].interval);
             timers[timerID].running = false;
+            timers[timerID].paused = false;
         }
     }, 1000);
 }
