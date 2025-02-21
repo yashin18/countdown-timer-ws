@@ -73,7 +73,7 @@ function startTimer(timerID) {
             timers[timerID].running = false;
             timers[timerID].paused = false;
         }
-    }, 100);
+    }, 10);
 }
 
 function broadcast(timerID) {
