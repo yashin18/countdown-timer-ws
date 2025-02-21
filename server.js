@@ -66,7 +66,10 @@ wss.on("connection", (ws) => {
 function startTimer(timerID) {
     timers[timerID].interval = setInterval(() => {
         if (timers[timerID].time > 0) {
-            timers[timerID].time = Math.max(0, parseFloat((timers[timerID].time - 0.1).toFixed(2)));
+            timers[timerID].time -= 0.1;
+
+            // Ensure proper rounding to avoid floating point errors
+            timers[timerID].time = Math.round(timers[timerID].time * 100) / 100;
 
             broadcast(timerID);
         } else {
@@ -76,6 +79,7 @@ function startTimer(timerID) {
         }
     }, 100);
 }
+
 
 function broadcast(timerID) {
     const data = JSON.stringify({ timer: timerID, time: timers[timerID].time });
