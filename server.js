@@ -66,7 +66,7 @@ wss.on("connection", (ws) => {
 function startTimer(timerID) {
     timers[timerID].interval = setInterval(() => {
         if (timers[timerID].time > 0) {
-            timers[timerID].time--;
+            timers[timerID].time-= 0.1;
             broadcast(timerID);
         } else {
             clearInterval(timers[timerID].interval);
